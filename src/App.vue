@@ -1,26 +1,56 @@
+<!-- src/App.vue -->
+
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <h1>{{ isAuthenticated ? 'Welcome!' : 'Biometric Authentication' }}</h1>
+    <div v-if="isAuthenticated">
+      <p>You have successfully authenticated using biometrics.</p>
+      <button @click="logout">Logout</button>
+    </div>
+    <div v-else>
+      <button @click="authenticate">Authenticate using Biometrics</button>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  data() {
+    return {
+      isAuthenticated: false,
+    };
+  },
+  methods: {
+    async authenticate() {
+      try {
+        await navigator.credentials.create({
+          publicKey: {
+            // ... your authentication parameters
+          },
+        });
+
+        // For demonstration purposes, let's assume authentication is successful
+        this.isAuthenticated = true;
+      } catch (error) {
+        console.error('Biometric authentication failed:', error);
+      }
+    },
+    logout() {
+      this.isAuthenticated = false;
+    },
+  },
+};
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  padding: 2em;
+}
+
+button {
+  margin-top: 1em;
+  padding: 0.5em 1em;
+  cursor: pointer;
 }
 </style>
